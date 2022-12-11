@@ -23,7 +23,7 @@ class Product(models.Model):
     imageURL = models.ImageField(default="")
     description = models.TextField(max_length=400, null=True, blank=True)
     address = models.CharField(max_length=100, null=True, blank=True)
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
     coupon = models.ForeignKey(Coupon, on_delete=models.SET_NULL, null=True, blank=True)
     def __str__(self):
         return self.name
