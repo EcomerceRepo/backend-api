@@ -7,22 +7,10 @@ class User(AbstractUser):
         (2, 'CLIENT')
     )
     role = models.PositiveSmallIntegerField(choices=ROLE_CHOICES, default=1)
+    username = None
+    email = models.EmailField(default="", unique=True)
 
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
     def __str__(self):
         return self.email
-
-class Client(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, default=None)
-    balance = models.IntegerField(default=0)
-    joinDate = models.DateTimeField(auto_now_add=True)
-    address = models.CharField(max_length=200, default="")
-    phoneNumber = models.CharField(max_length=15, default="")
-    def __str__(self):
-        return self.user.email if self.user != None else self.pk
-
-class Employee(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, default=None)
-    department = models.CharField(max_length=30, default="")
-    joinDate = models.DateTimeField(auto_now_add=True)
-    def __str__(self):
-        return self.user.email if self.user != None else self.pk

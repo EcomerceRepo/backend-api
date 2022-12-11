@@ -1,7 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
-
+from  users_api.permissions import IsClient, IsEmployee
 from django.http import Http404
 from .models import Product
 from .serializers import ProductSerializer
@@ -9,7 +9,7 @@ from .serializers import ProductSerializer
 from users_api.decorators import client_only
 
 class ProductsList(APIView):
-    @client_only
+    permission_classes = [IsClient]
     def get(self, request, format=None):
         products = Product.objects.all()
         serializer = ProductSerializer(products, many=True)
