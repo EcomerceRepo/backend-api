@@ -7,10 +7,9 @@ from django.http import Http404
 from .models import Product
 from .serializers import ProductSerializer
 
-from users_api.decorators import client_only
 
 class ProductsList(APIView):
-    permission_classes = [IsClient, IsEmployee]
+    permission_classes = [AllowAny]
     def get(self, request, format=None):
         products = Product.objects.all()
         serializer = ProductSerializer(products, many=True)

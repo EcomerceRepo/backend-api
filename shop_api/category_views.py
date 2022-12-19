@@ -15,6 +15,7 @@ class CategoriesList(APIView):
         categorys = Category.objects.all()
         serializer = CategorySerializer(categorys, many=True)
         return Response(serializer.data)
+        
 class CategoriesListEmployee(APIView):  
     permission_classes = [IsEmployee]
     def post(self, request, format=None):

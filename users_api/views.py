@@ -10,12 +10,21 @@ from rest_framework.authtoken.models import Token
 import jwt, datetime
 
 
-class RegisterView(APIView):
+class RegisterClientView(APIView):
     def post(self, request):
-        print(request.data)
         userSerializer = serializers.UserSerializer(data=request.data)
         userSerializer.is_valid(raise_exception=True)
         userSerializer.save()
+        clientSerializer = serializers.ClientSerializer()
+
+        return Response(userSerializer.data)
+
+class RegisterEmployeeView(APIView):
+    def post(self, request):
+        userSerializer = serializers.UserSerializer(data=request.data)
+        userSerializer.is_valid(raise_exception=True)
+        userSerializer.save()
+        employeeSerializer = serializers.EmployeeSerializer()
         return Response(userSerializer.data)
         
 class LoginView(APIView):

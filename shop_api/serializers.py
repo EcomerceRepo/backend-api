@@ -1,10 +1,6 @@
 from rest_framework import serializers
 from . import models
-
-class ProductSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = models.Product
-        fields = '__all__'
+from django.shortcuts import get_object_or_404
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -15,3 +11,10 @@ class CouponSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Coupon
         fields = '__all__'
+
+class ProductSerializer(serializers.ModelSerializer):
+    category = serializers.PrimaryKeyRelatedField(queryset=models.Category.objects.all())
+    coupon = serializers.PrimaryKeyRelatedField(queryset=models.Coupon.objects.all(), required=False)
+    class Meta:
+        model = models.Product
+        fields = ['name', 'value', 'description', 'address', 'category', 'coupon']
