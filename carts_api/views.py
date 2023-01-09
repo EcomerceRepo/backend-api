@@ -2,9 +2,10 @@ from rest_framework.views import APIView
 from users_api.permissions import IsClient
 from rest_framework.response import Response
 from users_api.utils import getUserByToken
-from .models import Cart, CartItem
+from .models import Cart, CartItem, Order
 from .serializers import CartSerializer
 from shop_api.utils import get_product
+import datetime
 
 class CartView(APIView):
     permission_classes = [IsClient]
@@ -43,3 +44,24 @@ class CartProductView(APIView):
             return Response({"Status": f"Product {product.name} was removed from your cart"})
         else:
             return Response({"Status": f"This item is not in your cart"})
+
+class CheckoutView(APIView):
+
+    def post(self, request):
+        user = getUserByToken(request)
+        cart = Cart.objects.get(owner=user)
+        total_cart_cost = cart.calculate_total()
+        payment_method = request.data['payment_method']
+        if cart.cart_items_set.count() > 0 and total_cart_cost < user.balance:
+            order = Order.objects.create(customer=user, date_completed = datetime.datetime.now(), payment_method = payment_method)
+            for cart_item in cart.cart_items.all():
+                order.order_items.add(cart_item)
+            cart.cart_items.clear()
+            user.balance -= total_cart_cost
+            user.save()
+        else:
+            return Response({"Status": f"Your cart is empty!"})
+
+
+    def delete(self, request):
+        pass
