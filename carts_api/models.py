@@ -37,6 +37,6 @@ class Cart(models.Model):
 
     def calculate_total(self):
         total = 0
-        for cart_item in self.cart_items:
+        for cart_item in self.cart_items.all():
             total += cart_item.quantity * cart_item.product.value
         return total
