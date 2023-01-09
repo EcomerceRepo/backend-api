@@ -8,6 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework import permissions
 from rest_framework.authtoken.models import Token
 import jwt, datetime
+from carts_api.models import Cart
 
 
 class RegisterClientView(APIView):
@@ -15,7 +16,6 @@ class RegisterClientView(APIView):
         userSerializer = serializers.UserSerializer(data=request.data)
         userSerializer.is_valid(raise_exception=True)
         userSerializer.save()
-        clientSerializer = serializers.ClientSerializer()
 
         return Response(userSerializer.data)
 
@@ -24,7 +24,6 @@ class RegisterEmployeeView(APIView):
         userSerializer = serializers.UserSerializer(data=request.data)
         userSerializer.is_valid(raise_exception=True)
         userSerializer.save()
-        employeeSerializer = serializers.EmployeeSerializer()
         return Response(userSerializer.data)
         
 class LoginView(APIView):
@@ -32,11 +31,12 @@ class LoginView(APIView):
     def post(self, request):
         email = request.data["email"]
         password = request.data["password"]
-        user =  authenticate(email=email, password=password)
+        user = User.objects.filter(email=email).first()
         if user is None:
             raise AuthenticationFailed("User not found!")
         if not user.check_password(password):
             raise AuthenticationFailed("Incorrect password!")
+        login(request, user)
         payload = {
             "id": user.id,
             "exp": datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
@@ -46,16 +46,12 @@ class LoginView(APIView):
         response = Response()
         response.set_cookie(key='jwt', value=token, httponly=True)
         response.data = {'Status': token}
-        return response
+        ## if logged user doesn't have a cart, create one
+        cart = Cart.objects.filter(owner=user).first()
+        if cart is None:
+            Cart.objects.create(owner=user)
 
-class LogoutView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
-    def post(self, request):
-        if request.user is None:
-            AuthenticationFailed("User not found!")
-        request.user.auth_token.delete()
-        logout(request)
-        return Response('User Logged out successfully')
+        return response
 
 class UserView(APIView):
     def get(self, request):
