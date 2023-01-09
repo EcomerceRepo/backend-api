@@ -71,4 +71,13 @@ class CheckoutView(APIView):
         return Response({"data": serializer.data})
 
     def delete(self, request):
-        pass
+        order_id = request.data["id"]
+        user = getUserByToken(request)
+        order = Order.objects.filter(id=order_id).first()
+        if order is None:
+            return Response({"Status": "This order doesn't exist!"})
+        order_total_cost = order.calculate_total()
+        order.delete()
+        user.client.balance += order_total_cost
+        user.save()
+        return Response({"Status": "Order has been cancelled, funds have been restored to your account!"})

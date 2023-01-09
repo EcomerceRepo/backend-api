@@ -25,6 +25,12 @@ class Order(models.Model):
     def __str__(self):
         return f"Order nr. {self.id}"
 
+    def calculate_total(self):
+        total = 0
+        for order_item in self.order_items.all():
+            total += order_item.quantity * order_item.product.value
+        return total
+
 
 class Cart(models.Model):
     date_created = models.DateField(auto_now_add=True)
