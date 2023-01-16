@@ -19,7 +19,6 @@ class Product(models.Model):
     name = models.CharField(max_length = 30)
     value = models.IntegerField(default=0)
     date_added = models.DateTimeField(auto_now_add=True)
-    # imageURL = models.ImageField(default="")
     description = models.TextField(max_length=400, null=True, blank=True)
     address = models.CharField(max_length=100, null=True, blank=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)

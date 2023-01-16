@@ -53,7 +53,7 @@ class ProductDetailsEmployee(APIView):
     def delete(self, request, pk, format=None):
         product = get_product(pk)
         product.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response({"Response": "Product deleted successfully"})
 
 
 

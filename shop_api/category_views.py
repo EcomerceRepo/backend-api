@@ -50,7 +50,7 @@ class CategoryDetailEmployee(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
   
     def patch(self, request, pk, format=None):
-        category = self.get_object(pk)
+        category = get_object(pk)
         serializer = CategorySerializer(category, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -59,7 +59,7 @@ class CategoryDetailEmployee(APIView):
           
   
     def delete(self, request, pk, format=None):
-        category = self.get_object(pk)
+        category = get_object(pk)
         category.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response({"Response": "Category deleted successfully"})
 

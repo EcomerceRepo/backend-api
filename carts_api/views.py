@@ -52,8 +52,9 @@ class CheckoutView(APIView):
         cart = Cart.objects.get(owner=user)
         total_cart_cost = cart.calculate_total()
         payment_method = request.data['payment_method']
-        print(total_cart_cost)
-        if cart.cart_items.count() > 0 and total_cart_cost < user.client.balance:
+        if total_cart_cost > user.client.balance:
+            return Response({"Status": f"Insufficient balance!"})
+        if cart.cart_items.count() > 0:
             order = Order.objects.create(customer=user, date_completed = datetime.datetime.now(), payment_method = payment_method)
             for cart_item in cart.cart_items.all():
                 order.order_items.add(cart_item)

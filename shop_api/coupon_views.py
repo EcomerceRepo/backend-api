@@ -62,6 +62,6 @@ class CouponDetailEmployee(APIView):
           
   
     def delete(self, request, pk, format=None):
-        coupon = self.get_object(pk)
+        coupon = get_object(pk)
         coupon.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response({"Response": "Coupon deleted successfully"})
