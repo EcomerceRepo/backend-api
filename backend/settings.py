@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     'users_api.apps.UsersApiConfig',
     'carts_api.apps.CartsApiConfig',
     'rest_framework',
-    'rest_framework.authtoken',
     'corsheaders',
 ]
 
