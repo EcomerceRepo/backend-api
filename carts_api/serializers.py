@@ -24,7 +24,7 @@ class OrderSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 class FavoritesSerializer(serializers.ModelSerializer):
-    products = ProductSerializer(read_only = True, many = True)
+    favorite_items = ProductSerializer(read_only = True, many = True)
     class Meta:
         model = Favorites
         fields = "__all__"

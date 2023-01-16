@@ -13,8 +13,8 @@ class CouponSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ProductSerializer(serializers.ModelSerializer):
-    category = serializers.PrimaryKeyRelatedField(queryset=models.Category.objects.all())
-    coupon = serializers.PrimaryKeyRelatedField(queryset=models.Coupon.objects.all(), required=False)
+    category = CategorySerializer()
+    coupon = CouponSerializer()
     class Meta:
         model = models.Product
         fields = ['name', 'value', 'description', 'address', 'category', 'coupon']

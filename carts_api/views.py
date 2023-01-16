@@ -104,6 +104,8 @@ class BalanceView(APIView):
         return Response(serializer.data)
 
 class FavoritesView(APIView):
+    permission_classes=[IsClient]
+
     def get(self, request):
         user = getUserByToken(request)
         favorites = Favorites.objects.get(owner=user)
@@ -115,11 +117,10 @@ class FavoritesView(APIView):
         favorites = Favorites.objects.get(owner=user)
         product_id = request.data["id"]
         product = get_product(product_id)
-        favorite_item = favorites.favorite_items.filter(favorite_item=product).first()
-        if favorite_item is not None:
+        if product in favorites.favorite_items.all():
             return Response({"Status": f"Product {product.name} is already in your favorites"}) 
         else:
-            favorites.favorite_items.add(favorite_item)
+            favorites.favorite_items.add(product)
         return Response({"Status": f"Product {product.name} was added to your favorites"})
 
     def delete(self, request):
@@ -127,9 +128,8 @@ class FavoritesView(APIView):
         favorites = Favorites.objects.get(owner=user)
         product_id = request.data["id"]
         product = get_product(product_id)
-        favorite_item = favorites.favorite_items.filter(product=product).first()
-        if favorite_item is not None:
-            favorites.cart_items.remove(favorite_item)
+        if product in favorites.favorite_items.all():
+            favorites.favorite_items.remove(product)
             return Response({"Status": f"Product {product.name} was removed from favorites"})
         else:
             return Response({"Status": f"This item is not in your favorites"})
