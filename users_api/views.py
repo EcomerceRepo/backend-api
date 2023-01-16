@@ -3,12 +3,10 @@ from . import serializers
 from rest_framework.response import Response
 from .models import  User
 from rest_framework.exceptions import AuthenticationFailed
-from django.contrib.auth import authenticate, logout, login
-from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth import login
 from rest_framework import permissions
-from rest_framework.authtoken.models import Token
 import jwt, datetime
-from carts_api.models import Cart
+from carts_api.models import Cart, Favorites
 
 
 class RegisterClientView(APIView):
@@ -50,6 +48,9 @@ class LoginView(APIView):
         cart = Cart.objects.filter(owner=user).first()
         if cart is None:
             Cart.objects.create(owner=user)
+        favorites = Favorites.objects.filter(owner=user).first()
+        if favorites is None:
+            Favorites.objects.create(owner=user)
 
         return response
 

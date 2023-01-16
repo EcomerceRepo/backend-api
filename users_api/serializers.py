@@ -1,11 +1,11 @@
 from rest_framework import serializers
 from . import models
-from carts_api.models import Cart
+from carts_api.models import Cart, Favorites
 
 class ClientSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Client
-        fields = ["address", "phone_number"]
+        fields = ["address", "phone_number", "balance"]
 
 class EmployeeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -35,6 +35,7 @@ class UserSerializer(serializers.ModelSerializer):
         else:
             models.Client.objects.create(**client_data, user=instance)
             Cart.objects.create(owner=instance)
+            Favorites.objects.create(owner=instance)
 
 
         return instance

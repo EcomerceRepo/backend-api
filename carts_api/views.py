@@ -2,8 +2,9 @@ from rest_framework.views import APIView
 from users_api.permissions import IsClient
 from rest_framework.response import Response
 from users_api.utils import getUserByToken
-from .models import Cart, CartItem, Order
-from .serializers import CartSerializer, OrderSerializer
+from .models import Cart, CartItem, Order, Favorites
+from .serializers import CartSerializer, OrderSerializer, FavoritesSerializer
+from users_api.serializers import UserSerializer
 from shop_api.utils import get_product
 import datetime
 
@@ -36,7 +37,6 @@ class CartProductView(APIView):
         user = getUserByToken(request)
         cart = Cart.objects.get(owner=user)
         product_id = request.data["id"]
-        # quantity = request.data["quantity"]
         product = get_product(product_id)
         cart_item = cart.cart_items.filter(product=product).first()
         if cart_item is not None:
@@ -62,11 +62,17 @@ class CheckoutView(APIView):
             user.save()
             return Response({"Status": f"Your order was placed!"})
         else:
-            return Response({"Status": f"Your cart is empty!"})
+            return Response({"Status": f"Your cart is empty! Add some products to place the order"})
 
     def get(self, request):
         user = getUserByToken(request)
-        orders = Order.objects.filter(customer=user)
+        option = request.data["option"]
+        if option == "historical":
+            orders = Order.objects.filter(customer=user, isCompleted=True)
+        elif option == "pending":
+            orders = Order.objects.filter(customer=user, isCompleted=False)
+        elif option == "all":
+            orders = Order.objects.filter(customer=user)
         serializer = OrderSerializer(orders, many=True)
         return Response({"data": serializer.data})
 
@@ -81,3 +87,49 @@ class CheckoutView(APIView):
         user.client.balance += order_total_cost
         user.save()
         return Response({"Status": "Order has been cancelled, funds have been restored to your account!"})
+
+class BalanceView(APIView):
+    permission_classes=[IsClient]
+
+    def get(self, request):
+        user = getUserByToken(request)
+        return Response({"Balance of currently logged user": user.client.balance })
+
+    def post(self, request):
+        balance = request.data["balance"]
+        user = getUserByToken(request)
+        user.client.balance += balance
+        user.client.save()
+        serializer = UserSerializer(user)
+        return Response(serializer.data)
+
+class FavoritesView(APIView):
+    def get(self, request):
+        user = getUserByToken(request)
+        favorites = Favorites.objects.get(owner=user)
+        serializer = FavoritesSerializer(favorites)
+        return Response(serializer.data)
+    
+    def post(self, request):
+        user = getUserByToken(request)
+        favorites = Favorites.objects.get(owner=user)
+        product_id = request.data["id"]
+        product = get_product(product_id)
+        favorite_item = favorites.favorite_items.filter(favorite_item=product).first()
+        if favorite_item is not None:
+            return Response({"Status": f"Product {product.name} is already in your favorites"}) 
+        else:
+            favorites.favorite_items.add(favorite_item)
+        return Response({"Status": f"Product {product.name} was added to your favorites"})
+
+    def delete(self, request):
+        user = getUserByToken(request)
+        favorites = Favorites.objects.get(owner=user)
+        product_id = request.data["id"]
+        product = get_product(product_id)
+        favorite_item = favorites.favorite_items.filter(product=product).first()
+        if favorite_item is not None:
+            favorites.cart_items.remove(favorite_item)
+            return Response({"Status": f"Product {product.name} was removed from favorites"})
+        else:
+            return Response({"Status": f"This item is not in your favorites"})

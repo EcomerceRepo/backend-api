@@ -34,7 +34,6 @@ def get_object(pk):
 
 class CategoryDetail(APIView):
     permission_classes = [AllowAny]
-  
     def get(self, request, pk, format=None):
         category = get_object(pk)
         serializer = CategorySerializer(category)
@@ -52,9 +51,7 @@ class CategoryDetailEmployee(APIView):
   
     def patch(self, request, pk, format=None):
         category = self.get_object(pk)
-        serializer = CategorySerializer(category,
-                                           data=request.data,
-                                           partial=True)
+        serializer = CategorySerializer(category, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)

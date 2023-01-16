@@ -16,6 +16,7 @@ class Order(models.Model):
     date_completed = models.DateField()
     customer = models.ForeignKey(UsersApiModels.User, on_delete=models.CASCADE)
     order_items = models.ManyToManyField(CartItem)
+    isCompleted = models.BooleanField(default=False)
     PAYMENT_METHOD_CHOICES = (
         (1, 'Paypal'),
         (2, 'Przelewy24')
@@ -46,3 +47,7 @@ class Cart(models.Model):
         for cart_item in self.cart_items.all():
             total += cart_item.quantity * cart_item.product.value
         return total
+
+class Favorites(models.Model):
+    owner = models.ForeignKey(UsersApiModels.User, on_delete=models.CASCADE)
+    favorite_items = models.ManyToManyField(ShopApiModels.Product)

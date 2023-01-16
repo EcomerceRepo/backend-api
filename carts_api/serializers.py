@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from carts_api.models import Cart, CartItem, Order
+from carts_api.models import Cart, CartItem, Order, Favorites
 from shop_api.serializers import ProductSerializer
 from users_api.serializers import UserSerializer
 
@@ -21,4 +21,10 @@ class OrderSerializer(serializers.ModelSerializer):
     customer = UserSerializer()
     class Meta:
         model = Order
+        fields = "__all__"
+
+class FavoritesSerializer(serializers.ModelSerializer):
+    products = ProductSerializer(read_only = True, many = True)
+    class Meta:
+        model = Favorites
         fields = "__all__"

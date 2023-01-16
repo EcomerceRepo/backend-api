@@ -18,6 +18,7 @@ class Client(models.Model):
     balance = models.IntegerField(default=0)
     address = models.CharField(max_length=100)
     phone_number = models.CharField(max_length=100)
+    
 
 class Employee(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)

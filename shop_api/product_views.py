@@ -43,9 +43,7 @@ class ProductDetailsEmployee(APIView):
   
     def patch(self, request, pk, format=None):
         product = get_product(pk)
-        serializer = ProductSerializer(product,
-                                           data=request.data,
-                                           partial=True)
+        serializer = ProductSerializer(product,data=request.data,partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
