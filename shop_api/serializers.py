@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from . import models
-from django.shortcuts import get_object_or_404
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
