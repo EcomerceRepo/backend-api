@@ -18,7 +18,7 @@ source venv/bin/activate
 ```
 ### 3. Instal the dependencies
 ```
-pip freeze > requirements.txt
+pip install -r requirements.txt
 ```
 ### 4. Run the Django local server
 ```
