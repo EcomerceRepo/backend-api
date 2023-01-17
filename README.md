@@ -24,5 +24,10 @@ pip install -r requirements.txt
 ```
 python manage.py runserver
 ```
+### 5. Test the API
+Try requesting this URL.
+```
+http://127.0.0.1:8000/product/
+```
 # Demo
 https://www.youtube.com/watch?v=wegg1lghUJE&ab_channel=MaksymMalicki
