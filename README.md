@@ -20,9 +20,11 @@ source venv/bin/activate
 ```
 pip install -r requirements.txt
 ```
-### 4. Run the Django local server
+### 4. Run the Django local server and migrations
 ```
 python manage.py runserver
+python manage.py makemigrations
+python manage.py migrate
 ```
 ### 5. Test the API
 Try requesting this URL.
