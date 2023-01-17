@@ -20,7 +20,18 @@ source venv/bin/activate
 ```
 pip install -r requirements.txt
 ```
-### 4. Run the Django local server
+### 4. Run the Django local server and migrations
 ```
 python manage.py runserver
+python manage.py makemigrations
+python manage.py migrate
 ```
+### 5. Test the API
+Try requesting this URL.
+```
+http://127.0.0.1:8000/product/
+```
+6. Additional information
+The created database is a local SQLite databse, which will be empty. Before using the API, acknowledge yourself with the endpoints that are dedicated for given users. Then use the endpoints to create a dedicated user (client / employee), then populate the database with some records.
+# Demo
+https://www.youtube.com/watch?v=wegg1lghUJE&ab_channel=MaksymMalicki
