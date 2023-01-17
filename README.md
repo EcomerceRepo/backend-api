@@ -24,3 +24,5 @@ pip install -r requirements.txt
 ```
 python manage.py runserver
 ```
+# Demo
+https://www.youtube.com/watch?v=wegg1lghUJE&ab_channel=MaksymMalicki
