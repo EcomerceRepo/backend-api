@@ -3,11 +3,11 @@ from rest_framework.views import APIView
 from rest_framework import status
 
 from django.http import Http404
-from .models import Category
+from .models import Category, Product
 from .serializers import CategorySerializer
 from users_api.permissions import IsEmployee
 from rest_framework.permissions import AllowAny
-
+from django.db.models import Count
 
 class CategoriesList(APIView):  
     permission_classes = [AllowAny]
@@ -26,6 +26,7 @@ class CategoriesListEmployee(APIView):
                             status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 def get_object(pk):
     try:
         return Category.objects.get(pk=pk)
@@ -37,7 +38,8 @@ class CategoryDetail(APIView):
     def get(self, request, pk, format=None):
         category = get_object(pk)
         serializer = CategorySerializer(category)
-        return Response(serializer.data)
+        numberOfProducts = Product.objects.filter(category=category).aggregate(count=Count('id'))
+        return Response({"data": serializer.data, "number-of-products": numberOfProducts})
 
 class CategoryDetailEmployee(APIView):
     permission_classes = [IsEmployee]

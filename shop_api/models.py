@@ -10,7 +10,7 @@ class Coupon(models.Model):
     code = models.CharField(max_length = 10)
     discount_percent = models.IntegerField()
     dateAdded = models.DateTimeField(auto_now_add=True)
-    days_valid = models.IntegerField(default=14)
+    daysValid = models.IntegerField(default=14)
     def __str__(self):
         return self.code
 

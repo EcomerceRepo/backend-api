@@ -27,7 +27,7 @@ class Migration(migrations.Migration):
                 ('code', models.CharField(max_length=10)),
                 ('discount_percent', models.IntegerField()),
                 ('dateAdded', models.DateTimeField(auto_now_add=True)),
-                ('days_valid', models.IntegerField(default=14)),
+                ('daysValid', models.IntegerField(default=14)),
             ],
         ),
         migrations.CreateModel(
