@@ -7,6 +7,7 @@ from .serializers import CartSerializer, OrderSerializer, FavoritesSerializer
 from users_api.serializers import UserSerializer
 from shop_api.utils import get_product
 import datetime
+from django.http import HttpResponseBadRequest
 
 class CartView(APIView):
     permission_classes = [IsClient]
@@ -21,6 +22,8 @@ class CartProductView(APIView):
     def post(self, request):
         user = getUserByToken(request)
         cart = Cart.objects.get(owner=user)
+        if "id" not in request.data  or "quantity" not in request.data:
+            return HttpResponseBadRequest("Incorrect request data was provided")        
         product_id = request.data["id"]
         quantity = request.data["quantity"]
         product = get_product(product_id)
@@ -36,6 +39,8 @@ class CartProductView(APIView):
     def delete(self, request):
         user = getUserByToken(request)
         cart = Cart.objects.get(owner=user)
+        if "id" not in request.data:
+            return HttpResponseBadRequest("Incorrect request data was provided")
         product_id = request.data["id"]
         product = get_product(product_id)
         cart_item = cart.cart_items.filter(product=product).first()
@@ -51,6 +56,8 @@ class CheckoutView(APIView):
         user = getUserByToken(request)
         cart = Cart.objects.get(owner=user)
         total_cart_cost = cart.calculate_total()
+        if "payment_method" not in request.data:
+            return HttpResponseBadRequest("Incorrect request data was provided")
         payment_method = request.data['payment_method']
         if total_cart_cost > user.client.balance:
             return Response({"Status": f"Insufficient balance!"})
@@ -67,6 +74,8 @@ class CheckoutView(APIView):
 
     def get(self, request):
         user = getUserByToken(request)
+        if "option" not in request.data:
+            return HttpResponseBadRequest("Incorrect request data was provided")
         option = request.data["option"]
         if option == "historical":
             orders = Order.objects.filter(customer=user, isCompleted=True)

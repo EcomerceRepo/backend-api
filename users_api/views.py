@@ -3,6 +3,7 @@ from . import serializers
 from rest_framework.response import Response
 from .models import  User
 from rest_framework.exceptions import AuthenticationFailed
+from django.http import HttpResponseBadRequest
 from django.contrib.auth import login
 from rest_framework import permissions
 import jwt, datetime
@@ -27,6 +28,8 @@ class RegisterEmployeeView(APIView):
 class LoginView(APIView):
     permission_classes = [permissions.AllowAny,]
     def post(self, request):
+        if "email" not in request.data  or "password" not in request.data:
+            return HttpResponseBadRequest("Incorrect request data was provided")
         email = request.data["email"]
         password = request.data["password"]
         user = User.objects.filter(email=email).first()

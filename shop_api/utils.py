@@ -5,4 +5,4 @@ def get_product(pk):
     try:
         return Product.objects.get(pk=pk)
     except Product.DoesNotExist:
-        raise Http404
+        raise Http404("Product does not exist")
