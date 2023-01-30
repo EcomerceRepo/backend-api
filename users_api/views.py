@@ -47,7 +47,6 @@ class LoginView(APIView):
         response = Response()
         response.set_cookie(key='jwt', value=token, httponly=True)
         response.data = {'Status': token}
-        ## if logged user doesn't have a cart, create one
         cart = Cart.objects.filter(owner=user).first()
         if cart is None:
             Cart.objects.create(owner=user)

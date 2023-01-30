@@ -26,6 +26,8 @@ class CartProductView(APIView):
             return HttpResponseBadRequest("Incorrect request data was provided")        
         product_id = request.data["id"]
         quantity = request.data["quantity"]
+        if int(quantity) < 1:
+            return HttpResponseBadRequest("Quantity must be a positive number!")        
         product = get_product(product_id)
         cart_item = cart.cart_items.filter(product=product).first()
         if cart_item is not None:

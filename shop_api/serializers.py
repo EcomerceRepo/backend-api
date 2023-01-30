@@ -16,4 +16,4 @@ class ProductSerializer(serializers.ModelSerializer):
     coupon = serializers.PrimaryKeyRelatedField(queryset=models.Coupon.objects.all(), required=False)
     class Meta:
         model = models.Product
-        fields = ['name', 'value', 'description', 'address', 'category', 'coupon']
+        fields = ['id','name', 'value', 'description', 'address', 'category', 'coupon']
